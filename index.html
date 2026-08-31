@@ -101,7 +101,31 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
       <button class="btn btn-primary" id="btn-start" disabled onclick="startAanmelding()">Aanmelden starten</button>
     </div>
     <p class="hint" style="margin-top:14px">Vragen? Mail <a href="mailto:dirk@ariadnebvba.be">dirk@ariadnebvba.be</a>.</p>
+    <div style="color:#c2cbd6;font-size:11px;margin-top:10px" id="app-versie"></div>
   </div>
+
+  <datalist id="dl-sector">
+    <option>Industrie &amp; productie</option><option>Bouw &amp; installatie</option>
+    <option>Groothandel</option><option>Detailhandel</option>
+    <option>Transport &amp; logistiek</option><option>Horeca &amp; toerisme</option>
+    <option>ICT &amp; software</option>
+    <option>Zakelijke dienstverlening (consulting, boekhouding, juridisch…)</option>
+    <option>Financiële dienstverlening &amp; verzekeringen</option><option>Vastgoed</option>
+    <option>Gezondheidszorg</option><option>Welzijn &amp; social profit</option>
+    <option>Onderwijs &amp; vorming</option><option>Overheid &amp; non-profit</option>
+    <option>Land- &amp; tuinbouw</option><option>Energie &amp; nutsbedrijven</option>
+    <option>Media &amp; communicatie</option><option>Automotive</option>
+    <option>Chemie &amp; farma</option><option>Voeding &amp; drank</option><option>Andere</option>
+  </datalist>
+  <datalist id="dl-functie">
+    <option>Zaakvoerder / eigenaar</option><option>Gedelegeerd bestuurder / CEO</option>
+    <option>Algemeen directeur</option><option>Financieel directeur / CFO</option>
+    <option>Operationeel directeur / COO</option><option>HR-directeur / HR-manager</option>
+    <option>Commercieel directeur / Sales manager</option><option>Marketingdirecteur</option>
+    <option>IT-directeur / IT-manager</option><option>Productieverantwoordelijke</option>
+    <option>Kwaliteitsmanager</option><option>Vestigingsmanager</option>
+    <option>Teamleider / afdelingshoofd</option><option>Office manager</option><option>Andere</option>
+  </datalist>
 
   <!-- STAP 2 — FORMULIER -->
   <form class="hidden" id="stap-form" onsubmit="return false">
@@ -130,7 +154,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
       </div>
       <div class="row">
         <div><label class="req">E-mailadres</label><input type="email" id="v_email"></div>
-        <div><label>Telefoon <span class="opt">(optioneel)</span></label><input type="tel" id="v_telefoon"></div>
+        <div><label>Telefoon <span class="opt">(optioneel)</span></label><input type="tel" id="v_telefoon" value="+32 "></div>
         <div><label>Adres <span class="opt">(optioneel)</span></label><input type="text" id="v_adres"></div>
       </div>
       <div class="row">
@@ -181,6 +205,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 // (SECURITY DEFINER) — met deze sleutel is geen enkele tabel leesbaar.
 var SB_URL = 'https://sphmxlfpzzowsekzjltd.supabase.co';
 var SB_KEY = 'sb_publishable_5-6NPQpNMh3pIhmDysO2Ug_6URRIwCc';
+var APP_VERSIE = 'v1.0';
 // Versie van de voorwaarden die de verwijzer aanvinkt (zie voorwaarden.html).
 var VOORWAARDEN_VERSIE = '2026-08-31';
 var akkoordOp = null;   // ISO-tijdstip waarop het vinkje werd aangezet + doorklik
@@ -193,7 +218,7 @@ var LEAD_HTML = function(n){ return ''
   +   '</h3>'
   +   '<div class="row">'
   +     '<div><label class="req">Bedrijfsnaam</label><input type="text" data-f="bedrijf"></div>'
-  +     '<div><label>Sector <span class="opt">(optioneel)</span></label><input type="text" data-f="sector" placeholder="bv. metaalverwerking, retail, zorg…"></div>'
+  +     '<div><label>Sector <span class="opt">(optioneel)</span></label><input type="text" data-f="sector" list="dl-sector" placeholder="kies of typ zelf"></div>'
   +     '<div><label>Aantal werknemers <span class="opt">(optioneel)</span></label>'
   +       '<select data-f="aantal_werknemers"><option value="">—</option>'
   +       '<option value="<10">minder dan 10</option><option value="10-49">10 – 49</option>'
@@ -206,9 +231,9 @@ var LEAD_HTML = function(n){ return ''
   +     '<div><label class="req">Achternaam contactpersoon</label><input type="text" data-f="achternaam"></div>'
   +   '</div>'
   +   '<div class="row">'
-  +     '<div><label class="req">Functietitel contactpersoon</label><input type="text" data-f="functietitel"></div>'
+  +     '<div><label class="req">Functietitel contactpersoon</label><input type="text" data-f="functietitel" list="dl-functie" placeholder="kies of typ zelf"></div>'
   +     '<div><label class="req">E-mailadres contactpersoon</label><input type="email" data-f="email"></div>'
-  +     '<div><label>Telefoon contactpersoon <span class="opt">(optioneel — liefst direct / gsm)</span></label><input type="tel" data-f="telefoon"></div>'
+  +     '<div><label>Telefoon contactpersoon <span class="opt">(optioneel — liefst direct / gsm)</span></label><input type="tel" data-f="telefoon" value="+32 "></div>'
   +   '</div>'
   +   '<label class="req">Kwalificatienota — waarom past dit bedrijf? (1 à 2 zinnen)</label>'
   +   '<textarea data-f="kwalificatienota" placeholder="Bv. De zaakvoerder wil binnen het jaar overlaten en zoekt structuur in het managementteam."></textarea>'
@@ -232,12 +257,12 @@ var LEAD_HTML = function(n){ return ''
   +   '<textarea data-f="ingeschatte_uitdaging"></textarea>'
   +   '<div class="row">'
   +     '<div><label class="req">Urgentie</label>'
-  +       '<select data-f="urgentie"><option value="">—</option>'
+  +       '<select data-f="urgentie">'
   +       '<option value="nu">Speelt nu</option>'
   +       '<option value="zes_maanden">Komende 6 maanden</option>'
-  +       '<option value="geen_timing">Geen concrete timing</option></select></div>'
+  +       '<option value="geen_timing" selected>Geen concrete timing</option></select></div>'
   +     '<div><label class="req">Mag The Next Level jou vermelden bij contactname?</label>'
-  +       '<select data-f="naam_noemen"><option value="">—</option><option value="true">Ja</option><option value="false">Liever niet</option></select></div>'
+  +       '<select data-f="naam_noemen"><option value="true" selected>Ja</option><option value="false">Liever niet</option></select></div>'
   +   '</div>'
   + '</div>'; };
 
@@ -255,11 +280,13 @@ function verwijderLead(n){
 }
 function leadBlocks(){ return Array.prototype.slice.call(document.querySelectorAll('.lead-block')); }
 
+function schoonTel(v){ v = (v || '').trim(); return (v === '+32' || v === '+32 ') ? '' : v; }
 function leesLead(block){
   var o = {};
   block.querySelectorAll('[data-f]').forEach(function(el){
-    var v = el.value.trim();
-    if (v !== '') o[el.getAttribute('data-f')] = v;
+    var f = el.getAttribute('data-f');
+    var v = (f === 'telefoon') ? schoonTel(el.value) : el.value.trim();
+    if (v !== '') o[f] = v;
   });
   return o;
 }
@@ -268,7 +295,7 @@ function leesVerwijzer(){
   var o = {
     aanspreking: g('v_aanspreking'), voornaam: g('v_voornaam'), achternaam: g('v_achternaam'),
     bedrijf: g('v_bedrijf'), functie: g('v_functie'), email: g('v_email'),
-    telefoon: g('v_telefoon'), adres: g('v_adres'), ondernemingsnummer: g('v_onder')
+    telefoon: schoonTel(g('v_telefoon')), adres: g('v_adres'), ondernemingsnummer: g('v_onder')
   };
   var f = g('v_factureren'); if (f) o.kan_factureren = f;
   Object.keys(o).forEach(function(k){ if (o[k] === '') delete o[k]; });
@@ -391,6 +418,7 @@ function toon(id){
 }
 
 voegLeadToe();
+document.getElementById('app-versie').textContent = APP_VERSIE;
 </script>
 </body>
 </html>
