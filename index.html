@@ -203,7 +203,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
     <div class="done-icon">✅</div>
     <h2 style="text-align:center">Bedankt, je aanmelding is binnen</h2>
     <p style="text-align:center" id="klaar-tekst"></p>
-    <p class="hint" style="text-align:center">We bevestigen elke lead binnen 2 werkdagen per e-mail op het adres dat je opgaf.</p>
+    <p class="hint" style="text-align:center">We bevestigen elke lead binnen 14 dagen per e-mail op het adres dat je opgaf.</p>
   </div>
 
 </div>
@@ -243,7 +243,7 @@ var LEAD_HTML = function(n){ return ''
   +       '<option value="onbekend">weet ik niet</option></select></div>'
   +   '</div>'
   +   '<div class="row">'
-  +     '<div style="flex:0 0 120px"><label class="req">Aanspreking</label><select data-f="aanspreking"><option value="">—</option><option>Dhr</option><option>Mevr</option></select></div>'
+  +     '<div style="flex:0 0 120px"><label class="req">Aanspreking</label><select data-f="aanspreking"><option>Dhr</option><option>Mevr</option></select></div>'
   +     '<div><label class="req">Voornaam contactpersoon</label><input type="text" data-f="voornaam"></div>'
   +     '<div><label class="req">Achternaam contactpersoon</label><input type="text" data-f="achternaam"></div>'
   +   '</div>'
