@@ -45,6 +45,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 .tips{background:#eef4fb;border:1px solid #cfe0f3;border-radius:10px;padding:12px 14px;font-size:13px;margin-bottom:14px}
 .tips b{color:var(--dark)}
 .tips ul{margin:6px 0 0 18px}
+.akkoord-label{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:13.5px;margin-top:16px;cursor:pointer;color:var(--text)}
+.akkoord-label input{width:auto;margin-top:3px;flex:0 0 auto}
 
 .btn{display:inline-block;border:none;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 .btn-primary{background:var(--mid);color:#fff}
@@ -79,27 +81,24 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
     </div>
   </div>
 
-  <!-- STAP 1 — INTRO -->
+  <!-- STAP 1 — INTRO + AKKOORD -->
   <div class="card" id="stap-intro">
-    <h2>Zo werken we samen</h2>
+    <h2>Word verwijzer voor The Next Level</h2>
     <p>Ken je een bedrijf dat baat zou hebben bij een frisse blik op zijn organisatie,
-       structuur, HR of groei? Meld het hier aan. Wij nemen contact op en volgen het verder op.</p>
-    <ul>
-      <li>Je krijgt <strong>10% fee</strong> op alle betaalde diensten die The Next Level
-          bij dat bedrijf presteert in de 12 maanden na de eerste Quick Scan.</li>
-      <li>De Quick Scan zelf is <strong>gratis</strong> — daar is geen fee op.</li>
-      <li>Maximaal <strong>€5.000 per aangebracht bedrijf</strong>.</li>
-      <li>Wie een bedrijf <strong>als eerste</strong> aanmeldt, is de verwijzer voor dat bedrijf.</li>
-      <li>Alle facturatie loopt via The Next Level (Ariadne BV). Je factureert je fee aan ons.</li>
-      <li>We bevestigen <strong>elke aanmelding binnen 2 werkdagen</strong> per e-mail —
-          "geregistreerd" (aan jou gekoppeld) of, met uitleg, niet weerhouden
-          (bv. al gekend of al in gesprek).</li>
-    </ul>
-    <p class="hint">Dit is geen contract, wel een duidelijke weergave van onze afspraken.
-       Vragen? Mail <a href="mailto:dirk@ariadnebvba.be">dirk@ariadnebvba.be</a>.</p>
+       structuur, HR of groei? Meld het hier aan. Breng je een bedrijf aan dat instroomt via
+       een gratis Quick Scan of via jouw introductie, dan ontvang je <strong>10% finder's fee</strong>
+       op de betaalde vervolgdiensten binnen 12 maanden — met een maximum van € 5.000 per klant.</p>
+    <p>Lees eerst even hoe de samenwerking precies werkt:</p>
+    <p><a class="btn btn-ghost" href="voorwaarden.html" target="_blank" rel="noopener">📄 Voorwaarden Finder's Fee openen</a></p>
+    <label class="akkoord-label">
+      <input type="checkbox" id="akkoord" onchange="document.getElementById('btn-start').disabled = !this.checked">
+      <span>Ik heb de <a href="voorwaarden.html" target="_blank" rel="noopener">Finder's Fee-voorwaarden</a>
+        gelezen en ga ermee akkoord.</span>
+    </label>
     <div class="actions">
-      <button class="btn btn-primary" onclick="toon('stap-form')">Aanmelden starten</button>
+      <button class="btn btn-primary" id="btn-start" disabled onclick="startAanmelding()">Aanmelden starten</button>
     </div>
+    <p class="hint" style="margin-top:14px">Vragen? Mail <a href="mailto:dirk@ariadnebvba.be">dirk@ariadnebvba.be</a>.</p>
   </div>
 
   <!-- STAP 2 — FORMULIER -->
@@ -173,6 +172,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 // (SECURITY DEFINER) — met deze sleutel is geen enkele tabel leesbaar.
 var SB_URL = 'https://sphmxlfpzzowsekzjltd.supabase.co';
 var SB_KEY = 'sb_publishable_5-6NPQpNMh3pIhmDysO2Ug_6URRIwCc';
+// Versie van de voorwaarden die de verwijzer aanvinkt (zie voorwaarden.html).
+var VOORWAARDEN_VERSIE = '2026-08-31';
+var akkoordOp = null;   // ISO-tijdstip waarop het vinkje werd aangezet + doorklik
 
 // ── Lead-velddefinities ──────────────────────────────────────
 var LEAD_HTML = function(n){ return ''
@@ -253,6 +255,7 @@ function leesVerwijzer(){
   };
   var f = g('v_factureren'); if (f) o.kan_factureren = f;
   Object.keys(o).forEach(function(k){ if (o[k] === '') delete o[k]; });
+  if (akkoordOp) { o.akkoord_voorwaarden_op = akkoordOp; o.akkoord_voorwaarden_versie = VOORWAARDEN_VERSIE; }
   return o;
 }
 
@@ -318,6 +321,11 @@ function dienIn(){
 }
 
 // ── Navigatie ────────────────────────────────────────────────
+function startAanmelding(){
+  if (!document.getElementById('akkoord').checked) return;
+  akkoordOp = new Date().toISOString();
+  toon('stap-form');
+}
 function toon(id){
   document.getElementById('stap-intro').classList.add('hidden');
   var el = document.getElementById(id);

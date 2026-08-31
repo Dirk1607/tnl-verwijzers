@@ -1,3 +1,5 @@
 .DS_Store
 Thumbs.db
 *.log
+# Gegenereerd Word-document (uit voorwaarden.html) — hoort niet op GitHub Pages
+Finders-Fee-zo-werken-we.docx
