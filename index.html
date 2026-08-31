@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bedrijf aanmelden — The Next Level</title>
-<meta name="description" content="Ken je een bedrijf dat baat zou hebben bij The Next Level? Meld het hier aan als verwijzer.">
+<meta name="description" content="Ken je een bedrijf dat baat zou hebben bij The Next Level? Meld het hier aan als introducer.">
 <meta name="robots" content="noindex">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -79,13 +79,13 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
     <div class="logo-fallback" style="display:none"><span>THE<br>NEXT<br>LEVEL</span></div>
     <div>
       <div class="site-title">Een bedrijf aanmelden</div>
-      <div class="site-sub">Voor verwijzers uit het netwerk van The Next Level</div>
+      <div class="site-sub">Voor introducers uit het netwerk van The Next Level</div>
     </div>
   </div>
 
   <!-- STAP 1 — INTRO + AKKOORD -->
   <div class="card" id="stap-intro">
-    <h2>Word verwijzer voor The Next Level</h2>
+    <h2>Word introducer voor The Next Level</h2>
     <p>Ken je een bedrijf dat baat zou hebben bij een frisse blik op zijn organisatie,
        structuur, HR of groei? Meld het hier aan. Breng je een bedrijf aan dat instroomt via
        een gratis Quick Scan of via jouw introductie, dan ontvang je <strong>10% finder's fee</strong>
@@ -111,9 +111,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
       <span class="hint" style="font-size:12px;margin:0">tijdelijk — vult het formulier met voorbeeldgegevens om te testen</span>
     </div>
 
+    <p class="hint" style="margin:0 2px 10px">Velden met <span style="color:var(--err);font-weight:700">*</span> zijn verplicht.</p>
+
     <div class="card">
       <h2>Jouw gegevens</h2>
-      <p class="hint">Zodat we weten wie de verwijzer is en de fee correct kunnen afhandelen.</p>
+      <p class="hint">Zodat we weten wie de introducer is en de fee correct kunnen afhandelen.</p>
       <div class="row">
         <div style="flex:0 0 120px">
           <label class="req">Aanspreking</label>
@@ -192,7 +194,7 @@ var LEAD_HTML = function(n){ return ''
   +   '<div class="row">'
   +     '<div><label class="req">Bedrijfsnaam</label><input type="text" data-f="bedrijf"></div>'
   +     '<div><label>Sector <span class="opt">(optioneel)</span></label><input type="text" data-f="sector" placeholder="bv. metaalverwerking, retail, zorg…"></div>'
-  +     '<div style="flex:0 0 170px"><label>Aantal werknemers <span class="opt">(optioneel)</span></label>'
+  +     '<div><label>Aantal werknemers <span class="opt">(optioneel)</span></label>'
   +       '<select data-f="aantal_werknemers"><option value="">—</option>'
   +       '<option value="<10">minder dan 10</option><option value="10-49">10 – 49</option>'
   +       '<option value="50-249">50 – 249</option><option value="250+">250 of meer</option>'
