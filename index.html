@@ -403,7 +403,10 @@ function vulTestdata(){
   var s = function(id, val){ var e = document.getElementById(id); if (e) e.value = val; };
   s('v_aanspreking','Dhr'); s('v_voornaam','Jan'); s('v_achternaam','Peeters');
   s('v_bedrijf','Peeters Advies BV'); s('v_functie','Zelfstandig consultant');
-  s('v_email','jan.peeters+' + r + '@example.com'); s('v_telefoon','+32 470 12 34 56');
+  // Vast testadres: zo kan je daarna "Gegevens ophalen" testen met
+  // jan.peeters@example.com + achternaam "Peeters". Herhaald aanmelden werkt de
+  // introducer-rij gewoon bij (upsert op e-mail).
+  s('v_email','jan.peeters@example.com'); s('v_telefoon','+32 470 12 34 56');
   s('v_adres','Dorpsstraat 1, 2000 Antwerpen'); s('v_onder','0700.123.456');
   leadBlocks().forEach(function(b){
     var f = function(name, val){ var e = b.querySelector('[data-f="' + name + '"]'); if (e) e.value = val; };
