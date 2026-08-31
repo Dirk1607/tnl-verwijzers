@@ -50,6 +50,16 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 .akkoord-label input{width:auto;margin-top:3px;flex:0 0 auto}
 .testbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff8e6;border:1px dashed #e0c874;border-radius:9px;padding:8px 12px;margin-bottom:14px}
 
+/* "Al eens aangemeld?" — introducer-gegevens ophalen (migratie 0044) */
+.herken{margin:16px 0 4px;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:0 14px}
+.herken summary{cursor:pointer;padding:12px 2px;font-size:13.5px;font-weight:600;color:var(--mid);list-style:none}
+.herken summary::-webkit-details-marker{display:none}
+.herken summary:before{content:"▸ ";color:var(--muted)}
+.herken[open] summary:before{content:"▾ "}
+.herken .body{padding:2px 0 14px}
+.herken .body .row{margin-bottom:10px}
+.prefill-melding{background:#eef7ee;border:1px solid #c9e6c9;color:#256029;border-radius:9px;padding:10px 13px;font-size:13px;margin-bottom:14px}
+
 .btn{display:inline-block;border:none;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 .btn-primary{background:var(--mid);color:#fff}
 .btn-primary:hover{background:var(--dark)}
@@ -92,6 +102,20 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
        op de betaalde vervolgdiensten binnen 12 maanden — met een maximum van € 5.000 per klant.</p>
     <p>Lees eerst even hoe de samenwerking precies werkt:</p>
     <p><a class="btn btn-ghost" href="voorwaarden.html" target="_blank" rel="noopener">Voorwaarden Finder's Fee openen</a></p>
+
+    <details class="herken" id="herken-blok">
+      <summary>Al eens een bedrijf aangemeld? Vul je gegevens automatisch in</summary>
+      <div class="body">
+        <div class="row">
+          <div><label>E-mailadres</label><input type="email" id="h_email"></div>
+          <div><label>Achternaam</label><input type="text" id="h_achternaam"></div>
+        </div>
+        <button class="btn btn-ghost" type="button" id="h_btn" onclick="haalIntroducerOp()"
+                style="font-size:13px;padding:8px 14px">Gegevens ophalen</button>
+        <div id="h_msg" class="hint" style="margin:8px 2px 0"></div>
+      </div>
+    </details>
+
     <label class="akkoord-label">
       <input type="checkbox" id="akkoord" onchange="document.getElementById('btn-start').disabled = !this.checked">
       <span>Ik heb de <a href="voorwaarden.html" target="_blank" rel="noopener">Finder's Fee-voorwaarden</a>
@@ -139,6 +163,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 
     <div class="card">
       <h2>Jouw gegevens</h2>
+      <div id="prefill-melding" class="prefill-melding hidden">✓ Ingevuld op basis van je vorige aanmelding — controleer even en pas aan waar nodig.</div>
       <p class="hint">Zodat we weten wie de introducer is en de fee correct kunnen afhandelen.</p>
       <div class="row">
         <div style="flex:0 0 120px">
@@ -194,6 +219,13 @@ var APP_VERSIE = 'v1.0';
 // Versie van de voorwaarden die de verwijzer aanvinkt (zie voorwaarden.html).
 var VOORWAARDEN_VERSIE = '2026-08-31';
 var akkoordOp = null;   // ISO-tijdstip waarop het vinkje werd aangezet + doorklik
+
+// "Al eens aangemeld? Vul je gegevens automatisch in" (DB-functie introducer_ophalen,
+// migratie 0044). Zet op false om die knop volledig te verbergen — de rest van het
+// formulier werkt dan ongewijzigd verder. Volledig terugdraaien = deze commit reverten
+// + het ROLLBACK-blok van 0044 draaien.
+var PREFILL_OPHALEN = true;
+var prefillGebruikt = false;   // true zodra "Jouw gegevens" uit een match is voorgevuld
 
 // ── Lead-velddefinities ──────────────────────────────────────
 var LEAD_HTML = function(n){ return ''
@@ -388,10 +420,52 @@ function vulTestdata(){
   });
 }
 
+// ── Al eens aangemeld: eigen gegevens ophalen ────────────────
+function haalIntroducerOp(){
+  var em = (document.getElementById('h_email').value || '').trim();
+  var an = (document.getElementById('h_achternaam').value || '').trim();
+  var msg = document.getElementById('h_msg');
+  var btn = document.getElementById('h_btn');
+  if (!em || !an){ msg.textContent = 'Vul je e-mailadres en achternaam in.'; return; }
+  btn.disabled = true; msg.textContent = 'Even zoeken…';
+
+  fetch(SB_URL + '/rest/v1/rpc/introducer_ophalen', {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY },
+    body: JSON.stringify({ p_email: em, p_achternaam: an })
+  }).then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      btn.disabled = false;
+      if (!data || typeof data !== 'object'){
+        msg.textContent = 'Geen eerdere aanmelding gevonden met die combinatie — vul je gegevens hieronder gewoon in.';
+        return;
+      }
+      var s = function(id, v){ var e = document.getElementById(id); if (e && v != null && v !== '') e.value = v; };
+      s('v_aanspreking', data.aanspreking); s('v_voornaam', data.voornaam); s('v_achternaam', data.achternaam);
+      s('v_bedrijf', data.bedrijf); s('v_functie', data.functie); s('v_onder', data.ondernemingsnummer);
+      s('v_email', data.email); s('v_telefoon', data.telefoon); s('v_adres', data.adres);
+      prefillGebruikt = true;
+      msg.textContent = '';
+      var b = document.getElementById('herken-blok'); if (b) b.open = false;
+      var g = document.getElementById('h_gevonden');
+      if (!g){
+        g = document.createElement('div'); g.id = 'h_gevonden'; g.className = 'hint';
+        g.style.cssText = 'margin:6px 2px 0;color:#256029';
+        document.getElementById('herken-blok').after(g);
+      }
+      g.textContent = '✓ Gegevens van ' + (data.voornaam ? data.voornaam + ' ' : '') + (data.achternaam || '') +
+        ' gevonden — vink hieronder aan en klik "Aanmelden starten".';
+    }).catch(function(){
+      btn.disabled = false;
+      msg.textContent = 'Kon niet ophalen. Probeer opnieuw of vul je gegevens gewoon in.';
+    });
+}
+
 // ── Navigatie ────────────────────────────────────────────────
 function startAanmelding(){
   if (!document.getElementById('akkoord').checked) return;
   akkoordOp = new Date().toISOString();
+  if (prefillGebruikt) document.getElementById('prefill-melding').classList.remove('hidden');
   toon('stap-form');
 }
 function toon(id){
@@ -403,6 +477,7 @@ function toon(id){
 
 voegLeadToe();
 document.getElementById('app-versie').textContent = APP_VERSIE;
+if (!PREFILL_OPHALEN) document.getElementById('herken-blok').classList.add('hidden');
 </script>
 </body>
 </html>
