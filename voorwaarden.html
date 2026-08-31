@@ -30,7 +30,23 @@ tr.tot td{font-weight:700;background:#f6f9fc}
 .slot{margin-top:22px;padding-top:16px;border-top:1px solid #eef2f7;font-style:italic;color:var(--muted);font-size:14px}
 .akkoord{margin-top:18px;font-size:13px;color:var(--muted)}
 a{color:var(--mid)}
-@media print{body{background:#fff;padding:0}.card{border:none;box-shadow:none;padding:0}}
+.acties{max-width:760px;margin:16px auto 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none}
+.btn-primary{background:var(--mid);color:#fff}
+.btn-primary:hover{background:var(--dark)}
+.btn-ghost{background:#eef2f7;color:var(--dark)}
+.btn-ghost:hover{background:#e2e8f0}
+@page{margin:1.6cm}
+@media print{
+  body{background:#fff;padding:0;font-size:10.5pt}
+  .container{max-width:none}
+  .card{border:none;box-shadow:none;padding:0;border-radius:0}
+  .geen-print{display:none}
+  h1,h2{color:#1A2E4A}
+  h2{page-break-after:avoid;break-after:avoid}
+  .vb,table,tr,ul{page-break-inside:avoid;break-inside:avoid}
+  a{color:#1e293b;text-decoration:none}
+}
 </style>
 </head>
 <body>
@@ -154,6 +170,15 @@ a{color:var(--mid)}
      akkoord"</em> aan te vinken, bevestig je dat je deze afspraken kent en aanvaardt.
      Versie 31 augustus 2026.</p>
 
-</div></div>
+</div>
+
+  <div class="acties geen-print">
+    <a class="btn btn-ghost" href="index.html">&larr; Terug naar aanmelden</a>
+    <button class="btn btn-primary" type="button" onclick="window.print()"
+            title="Kies in het printvenster 'Opslaan als PDF' als bestemming">&#128196; PDF aanmaken</button>
+  </div>
+
+</div>
+
 </body>
 </html>
