@@ -48,7 +48,6 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 .tips ul{margin:6px 0 0 18px}
 .akkoord-label{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:13.5px;margin-top:16px;cursor:pointer;color:var(--text)}
 .akkoord-label input{width:auto;margin-top:3px;flex:0 0 auto}
-.testbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff8e6;border:1px dashed #e0c874;border-radius:9px;padding:8px 12px;margin-bottom:14px}
 
 /* "Al eens aangemeld?" — introducer-gegevens ophalen (migratie 0044) */
 .herken{margin:16px 0 4px;border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:0 14px}
@@ -70,7 +69,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 
 .lead-block{border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;background:var(--surface)}
 .lead-block h3{margin-top:0;display:flex;justify-content:space-between;align-items:center}
-.lead-remove{background:none;border:none;color:var(--err);font-size:13px;cursor:pointer}
+.lead-remove{background:none;border:none;color:var(--err);font-size:13px;font-weight:600;cursor:pointer;padding:2px 4px}
+.lead-remove:hover{text-decoration:underline}
 
 .msg{padding:12px 14px;border-radius:9px;font-size:14px;margin-top:14px}
 .msg.err{background:#fef2f2;color:var(--err);border:1px solid #fecaca}
@@ -98,8 +98,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
     <h2>Word introducer voor The Next Level</h2>
     <p>Ken je een bedrijf dat baat zou hebben bij een frisse blik op zijn organisatie,
        structuur, HR of groei? Meld het hier aan. Breng je een bedrijf aan dat instroomt via
-       een gratis Quick Scan of via jouw introductie, dan ontvang je <strong>10% finder's fee</strong>
-       op de betaalde vervolgdiensten binnen 12 maanden — met een maximum van € 5.000 per klant.</p>
+       een gratis Quickscan of via jouw introductie, dan ontvang je <strong>10% finder's fee</strong>
+       op de betaalde diensten binnen 12 maanden, de totale fee per geïntroduceerde klant is beperkt
+       tot € 5.000.</p>
     <p>Lees eerst even hoe de samenwerking precies werkt:</p>
     <p><a class="btn btn-ghost" href="voorwaarden.html" target="_blank" rel="noopener">Voorwaarden Finder's Fee openen</a></p>
 
@@ -153,11 +154,6 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 
   <!-- STAP 2 — FORMULIER -->
   <form class="hidden" id="stap-form" onsubmit="return false">
-
-    <div class="testbar">
-      <button class="btn btn-ghost" type="button" onclick="vulTestdata()" style="font-size:12px;padding:6px 12px">🧪 Testdata invullen</button>
-      <span class="hint" style="font-size:12px;margin:0">tijdelijk — vult het formulier met voorbeeldgegevens om te testen</span>
-    </div>
 
     <p class="hint" style="margin:0 2px 10px">Velden met <span style="color:var(--err);font-weight:700">*</span> zijn verplicht.</p>
 
@@ -230,9 +226,9 @@ var prefillGebruikt = false;   // true zodra "Jouw gegevens" uit een match is vo
 
 // ── Lead-velddefinities ──────────────────────────────────────
 var LEAD_HTML = function(n){ return ''
-  + '<div class="lead-block" data-lead="'+n+'">'
-  +   '<h3><span>Bedrijf '+(n+1)+'</span>'
-  +     (n>0 ? '<button class="lead-remove" type="button" onclick="verwijderLead('+n+')">verwijderen</button>' : '')
+  + '<div class="lead-block">'
+  +   '<h3><span class="lead-titel">Bedrijf '+(n+1)+'</span>'
+  +     '<button class="lead-remove" type="button" onclick="verwijderLead(this)">✕ verwijderen</button>'
   +   '</h3>'
   +   '<div class="row">'
   +     '<div><label class="req">Bedrijfsnaam</label><input type="text" data-f="bedrijf"></div>'
@@ -253,7 +249,7 @@ var LEAD_HTML = function(n){ return ''
   +     '<div><label class="req">E-mailadres contactpersoon</label><input type="email" data-f="email"></div>'
   +     '<div><label>Telefoon contactpersoon <span class="opt">(optioneel — liefst direct / gsm)</span></label><input type="tel" data-f="telefoon" value="+32 "></div>'
   +   '</div>'
-  +   '<label class="req">Waarom past dit bedrijf? <span class="opt">(1 à 2 zinnen)</span></label>'
+  +   '<label class="req">Waarom denk je aan dit bedrijf? <span class="opt">(1 à 2 zinnen)</span></label>'
   +   '<textarea data-f="kwalificatienota" placeholder="Bv. De zaakvoerder wil binnen het jaar overlaten en zoekt structuur in het managementteam."></textarea>'
   +   '<div class="row">'
   +     '<div><label class="req">Jouw band met de contactpersoon</label>'
@@ -271,8 +267,6 @@ var LEAD_HTML = function(n){ return ''
   +   '</div>'
   +   '<label class="req">Concreet signaal of aanleiding — waarom nu?</label>'
   +   '<textarea data-f="signaal" placeholder="Een gebeurtenis, uitspraak of plan waardoor dit nú speelt."></textarea>'
-  +   '<label class="req">Wat is volgens jou de uitdaging?</label>'
-  +   '<textarea data-f="ingeschatte_uitdaging"></textarea>'
   +   '<div class="row">'
   +     '<div><label class="req">Urgentie</label>'
   +       '<select data-f="urgentie">'
@@ -280,7 +274,7 @@ var LEAD_HTML = function(n){ return ''
   +       '<option value="zes_maanden">Komende 6 maanden</option>'
   +       '<option value="geen_timing" selected>Geen concrete timing</option></select></div>'
   +     '<div><label class="req">Mag The Next Level jou vermelden bij contactname?</label>'
-  +       '<select data-f="naam_noemen"><option value="true" selected>Ja</option><option value="false">Liever niet</option></select></div>'
+  +       '<select data-f="naam_noemen"><option value="true" selected>Ja</option><option value="false">Nee</option></select></div>'
   +   '</div>'
   + '</div>'; };
 
@@ -291,12 +285,22 @@ function voegLeadToe(){
   div.innerHTML = LEAD_HTML(leadCount);
   wrap.appendChild(div.firstChild);
   leadCount++;
+  pasLeadKnoppenAan();
 }
-function verwijderLead(n){
-  var el = document.querySelector('.lead-block[data-lead="'+n+'"]');
-  if (el) el.remove();
+function verwijderLead(btn){
+  var blok = btn.closest('.lead-block');
+  if (blok) blok.remove();
+  pasLeadKnoppenAan();
 }
 function leadBlocks(){ return Array.prototype.slice.call(document.querySelectorAll('.lead-block')); }
+// "✕ verwijderen" enkel tonen als er méér dan één bedrijf staat; koppen hernummeren.
+function pasLeadKnoppenAan(){
+  var blocks = leadBlocks();
+  blocks.forEach(function(b, i){
+    b.querySelector('.lead-titel').textContent = 'Bedrijf ' + (i + 1);
+    b.querySelector('.lead-remove').style.display = blocks.length > 1 ? '' : 'none';
+  });
+}
 
 function schoonTel(v){ v = (v || '').trim(); return (v === '+32' || v === '+32 ') ? '' : v; }
 function leesLead(block){
@@ -330,8 +334,8 @@ var V_VERPLICHT = [
 var LEAD_VERPLICHT = {
   bedrijf:'de bedrijfsnaam', sector:'de sector', aanspreking:'de aanspreking', voornaam:'de voornaam contactpersoon',
   achternaam:'de achternaam contactpersoon', functietitel:'de functietitel', email:'het e-mailadres contactpersoon',
-  kwalificatienota:'waarom het bedrijf past', relatie_tot_contact:'je band met de contactpersoon',
-  al_gesproken:'of je er al over sprak', signaal:'het concrete signaal', ingeschatte_uitdaging:'de ingeschatte uitdaging',
+  kwalificatienota:'waarom je aan dit bedrijf denkt', relatie_tot_contact:'je band met de contactpersoon',
+  al_gesproken:'of je er al over sprak', signaal:'het concrete signaal',
   urgentie:'de urgentie', naam_noemen:'of The Next Level je naam mag noemen'
 };
 function valideer(){
@@ -395,32 +399,6 @@ function dienIn(){
   }).catch(function(){
     bezig = false; knop.disabled = false; knop.textContent = 'Aanmelden';
     toonFout('Geen verbinding. Controleer je internet en probeer opnieuw.');
-  });
-}
-
-// ── Testdata (tijdelijk) ─────────────────────────────────────
-function vulTestdata(){
-  var r = Math.floor(Math.random() * 9000 + 1000);
-  var s = function(id, val){ var e = document.getElementById(id); if (e) e.value = val; };
-  s('v_aanspreking','Dhr'); s('v_voornaam','Jan'); s('v_achternaam','Peeters');
-  s('v_bedrijf','Peeters Advies BV'); s('v_functie','Zelfstandig consultant');
-  // Vast testadres: zo kan je daarna "Gegevens ophalen" testen met
-  // jan.peeters@example.com + achternaam "Peeters". Herhaald aanmelden werkt de
-  // introducer-rij gewoon bij (upsert op e-mail).
-  s('v_email','jan.peeters@example.com'); s('v_telefoon','+32 470 12 34 56');
-  s('v_adres','Dorpsstraat 1, 2000 Antwerpen'); s('v_onder','0700.123.456');
-  leadBlocks().forEach(function(b){
-    var f = function(name, val){ var e = b.querySelector('[data-f="' + name + '"]'); if (e) e.value = val; };
-    f('bedrijf','TEST ' + r + ' — Metaalwerken Van Dijck NV');
-    f('sector','Metaalverwerking'); f('aantal_werknemers','50-249');
-    f('aanspreking','Mevr'); f('voornaam','Katrien'); f('achternaam','Van Dijck');
-    f('functietitel','Algemeen directeur'); f('email','k.vandijck+' + r + '@voorbeeld.be');
-    f('telefoon','+32 3 123 45 67');
-    f('kwalificatienota','De zaakvoerder wil binnen het jaar overlaten en zoekt structuur in het managementteam.');
-    f('relatie_tot_contact','oud_collega'); f('al_gesproken','kort_vermeld');
-    f('signaal','Ze vertelde vorige week op een netwerkevent dat de overdracht naar de volgende generatie vastloopt.');
-    f('ingeschatte_uitdaging','Rolverdeling en besluitvorming in het managementteam is onduidelijk geworden sinds de groei.');
-    f('urgentie','zes_maanden'); f('naam_noemen','true');
   });
 }
 
