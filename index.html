@@ -15,7 +15,8 @@
   --radius:10px;--radius-lg:14px;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f4f8;color:var(--text);min-height:100vh;padding:24px 16px;line-height:1.5}
-.container{max-width:680px;margin:0 auto}
+.container{max-width:1120px;margin:0 auto}
+#stap-intro,#stap-klaar{max-width:720px;margin-left:auto;margin-right:auto}
 .card{background:#fff;border-radius:var(--radius-lg);border:1px solid var(--border);padding:26px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .site-header{display:flex;align-items:center;gap:18px;margin-bottom:22px;padding:18px 22px;background:#fff;border-radius:14px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.07)}
 .site-header img{height:46px;width:auto}
@@ -47,6 +48,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 .tips ul{margin:6px 0 0 18px}
 .akkoord-label{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:13.5px;margin-top:16px;cursor:pointer;color:var(--text)}
 .akkoord-label input{width:auto;margin-top:3px;flex:0 0 auto}
+.testbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff8e6;border:1px dashed #e0c874;border-radius:9px;padding:8px 12px;margin-bottom:14px}
 
 .btn{display:inline-block;border:none;border-radius:9px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
 .btn-primary{background:var(--mid);color:#fff}
@@ -104,32 +106,37 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
   <!-- STAP 2 — FORMULIER -->
   <form class="hidden" id="stap-form" onsubmit="return false">
 
+    <div class="testbar">
+      <button class="btn btn-ghost" type="button" onclick="vulTestdata()" style="font-size:12px;padding:6px 12px">🧪 Testdata invullen</button>
+      <span class="hint" style="font-size:12px;margin:0">tijdelijk — vult het formulier met voorbeeldgegevens om te testen</span>
+    </div>
+
     <div class="card">
       <h2>Jouw gegevens</h2>
       <p class="hint">Zodat we weten wie de verwijzer is en de fee correct kunnen afhandelen.</p>
       <div class="row">
-        <div style="flex:0 0 110px">
-          <label>Aanspreking</label>
+        <div style="flex:0 0 120px">
+          <label class="req">Aanspreking</label>
           <select id="v_aanspreking"><option value="">—</option><option>Dhr</option><option>Mevr</option></select>
         </div>
         <div><label class="req">Voornaam</label><input type="text" id="v_voornaam"></div>
         <div><label class="req">Achternaam</label><input type="text" id="v_achternaam"></div>
       </div>
       <div class="row">
-        <div><label>Jouw bedrijf / vennootschap <span class="opt">(voor de facturatie)</span></label><input type="text" id="v_bedrijf"></div>
-        <div><label>Functie <span class="opt">(optioneel)</span></label><input type="text" id="v_functie"></div>
+        <div><label class="req">Jouw bedrijf / vennootschap</label><input type="text" id="v_bedrijf"></div>
+        <div><label class="req">Functie</label><input type="text" id="v_functie"></div>
       </div>
       <div class="row">
         <div><label class="req">E-mailadres</label><input type="email" id="v_email"></div>
         <div><label>Telefoon <span class="opt">(optioneel)</span></label><input type="tel" id="v_telefoon"></div>
+        <div><label>Adres <span class="opt">(optioneel)</span></label><input type="text" id="v_adres"></div>
       </div>
-      <label>Adres <span class="opt">(optioneel)</span></label><input type="text" id="v_adres">
       <div class="row">
         <div>
-          <label>Kan je zelf factureren? <span class="opt">(zelfstandige / vennootschap)</span></label>
+          <label class="req">Kan je zelf factureren? <span class="opt">(zelfstandige / vennootschap)</span></label>
           <select id="v_factureren"><option value="">—</option><option value="true">Ja</option><option value="false">Nee</option></select>
         </div>
-        <div><label>Ondernemingsnummer <span class="opt">(optioneel)</span></label><input type="text" id="v_onder"></div>
+        <div><label class="req">Ondernemingsnummer</label><input type="text" id="v_onder"></div>
       </div>
     </div>
 
@@ -182,44 +189,52 @@ var LEAD_HTML = function(n){ return ''
   +   '<h3><span>Bedrijf '+(n+1)+'</span>'
   +     (n>0 ? '<button class="lead-remove" type="button" onclick="verwijderLead('+n+')">verwijderen</button>' : '')
   +   '</h3>'
-  +   '<label class="req">Bedrijfsnaam</label><input type="text" data-f="bedrijf">'
   +   '<div class="row">'
-  +     '<div style="flex:0 0 110px"><label>Aanspreking</label><select data-f="aanspreking"><option value="">—</option><option>Dhr</option><option>Mevr</option></select></div>'
-  +     '<div><label>Voornaam contactpersoon</label><input type="text" data-f="voornaam"></div>'
-  +     '<div><label>Achternaam contactpersoon</label><input type="text" data-f="achternaam"></div>'
+  +     '<div><label class="req">Bedrijfsnaam</label><input type="text" data-f="bedrijf"></div>'
+  +     '<div><label>Sector <span class="opt">(optioneel)</span></label><input type="text" data-f="sector" placeholder="bv. metaalverwerking, retail, zorg…"></div>'
+  +     '<div style="flex:0 0 170px"><label>Aantal werknemers <span class="opt">(optioneel)</span></label>'
+  +       '<select data-f="aantal_werknemers"><option value="">—</option>'
+  +       '<option value="<10">minder dan 10</option><option value="10-49">10 – 49</option>'
+  +       '<option value="50-249">50 – 249</option><option value="250+">250 of meer</option>'
+  +       '<option value="onbekend">weet ik niet</option></select></div>'
   +   '</div>'
   +   '<div class="row">'
-  +     '<div><label>Functietitel contactpersoon</label><input type="text" data-f="functietitel"></div>'
-  +     '<div><label>E-mailadres contactpersoon</label><input type="email" data-f="email"></div>'
+  +     '<div style="flex:0 0 120px"><label class="req">Aanspreking</label><select data-f="aanspreking"><option value="">—</option><option>Dhr</option><option>Mevr</option></select></div>'
+  +     '<div><label class="req">Voornaam contactpersoon</label><input type="text" data-f="voornaam"></div>'
+  +     '<div><label class="req">Achternaam contactpersoon</label><input type="text" data-f="achternaam"></div>'
   +   '</div>'
-  +   '<label>Adres van het bedrijf <span class="opt">(optioneel)</span></label><input type="text" data-f="adres">'
+  +   '<div class="row">'
+  +     '<div><label class="req">Functietitel contactpersoon</label><input type="text" data-f="functietitel"></div>'
+  +     '<div><label class="req">E-mailadres contactpersoon</label><input type="email" data-f="email"></div>'
+  +     '<div><label>Telefoon contactpersoon <span class="opt">(optioneel — liefst direct / gsm)</span></label><input type="tel" data-f="telefoon"></div>'
+  +   '</div>'
   +   '<label class="req">Kwalificatienota — waarom past dit bedrijf? (1 à 2 zinnen)</label>'
   +   '<textarea data-f="kwalificatienota" placeholder="Bv. De zaakvoerder wil binnen het jaar overlaten en zoekt structuur in het managementteam."></textarea>'
   +   '<div class="row">'
-  +     '<div><label>Jouw band met de contactpersoon</label>'
+  +     '<div><label class="req">Jouw band met de contactpersoon</label>'
   +       '<select data-f="relatie_tot_contact"><option value="">—</option>'
   +       '<option value="oud_collega">Oud-collega</option>'
   +       '<option value="klant_van_mij">(Vroegere) klant van mij</option>'
   +       '<option value="netwerkcontact">Netwerkcontact</option>'
   +       '<option value="vriend_familie">Vriend / familie</option>'
   +       '<option value="anders">Anders</option></select></div>'
-  +     '<div><label>Heb je er al met de contactpersoon over gesproken?</label>'
+  +     '<div><label class="req">Heb je er al met de contactpersoon over gesproken?</label>'
   +       '<select data-f="al_gesproken"><option value="">—</option>'
   +       '<option value="nog_niet">Nog niet</option>'
   +       '<option value="kort_vermeld">Kort vermeld</option>'
   +       '<option value="verwacht_contact">Ja, hij/zij verwacht contact van The Next Level</option></select></div>'
   +   '</div>'
-  +   '<label>Concreet signaal of aanleiding — waarom nu?</label>'
+  +   '<label class="req">Concreet signaal of aanleiding — waarom nu?</label>'
   +   '<textarea data-f="signaal" placeholder="Een gebeurtenis, uitspraak of plan waardoor dit nú speelt."></textarea>'
-  +   '<label>Wat is volgens jou de uitdaging? <span class="opt">(optioneel)</span></label>'
+  +   '<label class="req">Wat is volgens jou de uitdaging?</label>'
   +   '<textarea data-f="ingeschatte_uitdaging"></textarea>'
   +   '<div class="row">'
-  +     '<div><label>Urgentie</label>'
+  +     '<div><label class="req">Urgentie</label>'
   +       '<select data-f="urgentie"><option value="">—</option>'
   +       '<option value="nu">Speelt nu</option>'
   +       '<option value="zes_maanden">Komende 6 maanden</option>'
   +       '<option value="geen_timing">Geen concrete timing</option></select></div>'
-  +     '<div><label>Mag The Next Level jou vermelden bij contactname?</label>'
+  +     '<div><label class="req">Mag The Next Level jou vermelden bij contactname?</label>'
   +       '<select data-f="naam_noemen"><option value="">—</option><option value="true">Ja</option><option value="false">Liever niet</option></select></div>'
   +   '</div>'
   + '</div>'; };
@@ -260,18 +275,31 @@ function leesVerwijzer(){
 }
 
 // ── Validatie ────────────────────────────────────────────────
+// Alle velden verplicht behalve telefoon, adres, sector en aantal werknemers.
+var V_VERPLICHT = [
+  ['v_aanspreking','je aanspreking'], ['v_voornaam','je voornaam'], ['v_achternaam','je achternaam'],
+  ['v_bedrijf','je bedrijf'], ['v_functie','je functie'], ['v_email','je e-mailadres'],
+  ['v_factureren','of je zelf kan factureren'], ['v_onder','je ondernemingsnummer']
+];
+var LEAD_VERPLICHT = {
+  bedrijf:'de bedrijfsnaam', aanspreking:'de aanspreking', voornaam:'de voornaam contactpersoon',
+  achternaam:'de achternaam contactpersoon', functietitel:'de functietitel', email:'het e-mailadres contactpersoon',
+  kwalificatienota:'de kwalificatienota', relatie_tot_contact:'je band met de contactpersoon',
+  al_gesproken:'of je er al over sprak', signaal:'het concrete signaal', ingeschatte_uitdaging:'de ingeschatte uitdaging',
+  urgentie:'de urgentie', naam_noemen:'of The Next Level je naam mag noemen'
+};
 function valideer(){
   var fouten = [];
-  if (!document.getElementById('v_voornaam').value.trim()) fouten.push('je voornaam');
-  if (!document.getElementById('v_achternaam').value.trim()) fouten.push('je achternaam');
+  V_VERPLICHT.forEach(function(p){ if (!document.getElementById(p[0]).value.trim()) fouten.push(p[1]); });
   var em = document.getElementById('v_email').value.trim();
-  if (!em || em.indexOf('@') < 1) fouten.push('een geldig e-mailadres');
+  if (em && em.indexOf('@') < 1) fouten.push('een geldig e-mailadres');
   var blocks = leadBlocks();
-  if (!blocks.length) fouten.push('minstens één bedrijf');
+  if (!blocks.length) return ['minstens één bedrijf'];
   blocks.forEach(function(b, i){
     var o = leesLead(b);
-    if (!o.bedrijf) fouten.push('de bedrijfsnaam bij bedrijf ' + (i+1));
-    if (!o.kwalificatienota) fouten.push('de kwalificatienota bij bedrijf ' + (i+1));
+    Object.keys(LEAD_VERPLICHT).forEach(function(f){
+      if (!o[f]) fouten.push(LEAD_VERPLICHT[f] + ' bij bedrijf ' + (i+1));
+    });
   });
   return fouten;
 }
@@ -288,7 +316,11 @@ function dienIn(){
   if (bezig) return;
   toonFout('');
   var f = valideer();
-  if (f.length){ toonFout('Vul eerst nog in: ' + f.join(', ') + '.'); return; }
+  if (f.length){
+    var lijst = f.length > 6 ? f.slice(0, 6).join(', ') + ' … (+' + (f.length - 6) + ')' : f.join(', ');
+    toonFout('Vul nog in: ' + lijst + '.');
+    return;
+  }
 
   var verwijzer = leesVerwijzer();
   var leads = leadBlocks().map(leesLead);
@@ -317,6 +349,29 @@ function dienIn(){
   }).catch(function(){
     bezig = false; knop.disabled = false; knop.textContent = 'Aanmelden';
     toonFout('Geen verbinding. Controleer je internet en probeer opnieuw.');
+  });
+}
+
+// ── Testdata (tijdelijk) ─────────────────────────────────────
+function vulTestdata(){
+  var r = Math.floor(Math.random() * 9000 + 1000);
+  var s = function(id, val){ var e = document.getElementById(id); if (e) e.value = val; };
+  s('v_aanspreking','Dhr'); s('v_voornaam','Jan'); s('v_achternaam','Peeters');
+  s('v_bedrijf','Peeters Advies BV'); s('v_functie','Zelfstandig consultant');
+  s('v_email','jan.peeters+' + r + '@example.com'); s('v_telefoon','+32 470 12 34 56');
+  s('v_adres','Dorpsstraat 1, 2000 Antwerpen'); s('v_factureren','true'); s('v_onder','0700.123.456');
+  leadBlocks().forEach(function(b){
+    var f = function(name, val){ var e = b.querySelector('[data-f="' + name + '"]'); if (e) e.value = val; };
+    f('bedrijf','TEST ' + r + ' — Metaalwerken Van Dijck NV');
+    f('sector','Metaalverwerking'); f('aantal_werknemers','50-249');
+    f('aanspreking','Mevr'); f('voornaam','Katrien'); f('achternaam','Van Dijck');
+    f('functietitel','Algemeen directeur'); f('email','k.vandijck+' + r + '@voorbeeld.be');
+    f('telefoon','+32 3 123 45 67');
+    f('kwalificatienota','De zaakvoerder wil binnen het jaar overlaten en zoekt structuur in het managementteam.');
+    f('relatie_tot_contact','oud_collega'); f('al_gesproken','kort_vermeld');
+    f('signaal','Ze vertelde vorige week op een netwerkevent dat de overdracht naar de volgende generatie vastloopt.');
+    f('ingeschatte_uitdaging','Rolverdeling en besluitvorming in het managementteam is onduidelijk geworden sinds de groei.');
+    f('urgentie','zes_maanden'); f('naam_noemen','true');
   });
 }
 
