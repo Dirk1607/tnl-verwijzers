@@ -195,6 +195,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
 
     <div class="actions">
       <button class="btn btn-primary" type="button" id="btn-indien" onclick="dienIn()">Aanmelden</button>
+      <button class="btn btn-ghost" type="button" onclick="annuleer()">Annuleren</button>
     </div>
   </form>
 
@@ -465,6 +466,11 @@ function haalIntroducerOp(){
 }
 
 // ── Navigatie ────────────────────────────────────────────────
+function annuleer(){
+  if (bezig) return;
+  if (!confirm('Aanmelding annuleren? De ingevulde gegevens gaan verloren.')) return;
+  location.reload();
+}
 function startAanmelding(){
   if (!document.getElementById('akkoord').checked) return;
   akkoordOp = new Date().toISOString();
