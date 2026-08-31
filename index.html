@@ -78,7 +78,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
     <div class="logo-fallback" style="display:none"><span>THE<br>NEXT<br>LEVEL</span></div>
     <div>
-      <div class="site-title">Een bedrijf aanmelden</div>
+      <div class="site-title">Een bedrijf introduceren</div>
       <div class="site-sub">Voor introducers uit het netwerk van The Next Level</div>
     </div>
   </div>
@@ -91,7 +91,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
        een gratis Quick Scan of via jouw introductie, dan ontvang je <strong>10% finder's fee</strong>
        op de betaalde vervolgdiensten binnen 12 maanden — met een maximum van € 5.000 per klant.</p>
     <p>Lees eerst even hoe de samenwerking precies werkt:</p>
-    <p><a class="btn btn-ghost" href="voorwaarden.html" target="_blank" rel="noopener">📄 Voorwaarden Finder's Fee openen</a></p>
+    <p><a class="btn btn-ghost" href="voorwaarden.html" target="_blank" rel="noopener">Voorwaarden Finder's Fee openen</a></p>
     <label class="akkoord-label">
       <input type="checkbox" id="akkoord" onchange="document.getElementById('btn-start').disabled = !this.checked">
       <span>Ik heb de <a href="voorwaarden.html" target="_blank" rel="noopener">Finder's Fee-voorwaarden</a>
@@ -143,7 +143,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
       <div class="row">
         <div style="flex:0 0 120px">
           <label class="req">Aanspreking</label>
-          <select id="v_aanspreking"><option value="">—</option><option>Dhr</option><option>Mevr</option></select>
+          <select id="v_aanspreking"><option>Dhr</option><option>Mevr</option></select>
         </div>
         <div><label class="req">Voornaam</label><input type="text" id="v_voornaam"></div>
         <div><label class="req">Achternaam</label><input type="text" id="v_achternaam"></div>
@@ -151,32 +151,17 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--light);border-co
       <div class="row">
         <div><label class="req">Jouw bedrijf / vennootschap</label><input type="text" id="v_bedrijf"></div>
         <div><label class="req">Functie</label><input type="text" id="v_functie"></div>
+        <div><label class="req">Ondernemingsnummer</label><input type="text" id="v_onder"></div>
       </div>
       <div class="row">
         <div><label class="req">E-mailadres</label><input type="email" id="v_email"></div>
         <div><label>Telefoon <span class="opt">(optioneel)</span></label><input type="tel" id="v_telefoon" value="+32 "></div>
         <div><label>Adres <span class="opt">(optioneel)</span></label><input type="text" id="v_adres"></div>
       </div>
-      <div class="row">
-        <div>
-          <label class="req">Kan je zelf factureren? <span class="opt">(zelfstandige / vennootschap)</span></label>
-          <select id="v_factureren"><option value="">—</option><option value="true">Ja</option><option value="false">Nee</option></select>
-        </div>
-        <div><label class="req">Ondernemingsnummer</label><input type="text" id="v_onder"></div>
-      </div>
     </div>
 
     <div class="card">
       <h2>Welk bedrijf meld je aan?</h2>
-      <div class="tips">
-        <b>Een sterke aanmelding heeft:</b>
-        <ul>
-          <li>een <b>concrete aanleiding</b> — een gebeurtenis, uitspraak of plan waardoor het nú speelt (niet "lijkt me interessant");</li>
-          <li>een <b>echte contactpersoon</b> met naam en functie;</li>
-          <li>een idee van de <b>uitdaging</b> waar het bedrijf mee zit.</li>
-        </ul>
-        Eén blok per bedrijf. Liever één goed onderbouwde lead dan een lange lijst.
-      </div>
       <div id="leads"></div>
       <button class="btn btn-ghost" type="button" onclick="voegLeadToe()">+ Nog een bedrijf toevoegen</button>
     </div>
@@ -218,9 +203,9 @@ var LEAD_HTML = function(n){ return ''
   +   '</h3>'
   +   '<div class="row">'
   +     '<div><label class="req">Bedrijfsnaam</label><input type="text" data-f="bedrijf"></div>'
-  +     '<div><label>Sector <span class="opt">(optioneel)</span></label><input type="text" data-f="sector" list="dl-sector" placeholder="kies of typ zelf"></div>'
-  +     '<div><label>Aantal werknemers <span class="opt">(optioneel)</span></label>'
-  +       '<select data-f="aantal_werknemers"><option value="">—</option>'
+  +     '<div><label class="req">Sector</label><input type="text" data-f="sector" list="dl-sector" placeholder="kies of typ zelf"></div>'
+  +     '<div><label>Aantal werknemers</label>'
+  +       '<select data-f="aantal_werknemers">'
   +       '<option value="<10">minder dan 10</option><option value="10-49">10 – 49</option>'
   +       '<option value="50-249">50 – 249</option><option value="250+">250 of meer</option>'
   +       '<option value="onbekend">weet ik niet</option></select></div>'
@@ -235,21 +220,21 @@ var LEAD_HTML = function(n){ return ''
   +     '<div><label class="req">E-mailadres contactpersoon</label><input type="email" data-f="email"></div>'
   +     '<div><label>Telefoon contactpersoon <span class="opt">(optioneel — liefst direct / gsm)</span></label><input type="tel" data-f="telefoon" value="+32 "></div>'
   +   '</div>'
-  +   '<label class="req">Kwalificatienota — waarom past dit bedrijf? (1 à 2 zinnen)</label>'
+  +   '<label class="req">Waarom past dit bedrijf? <span class="opt">(1 à 2 zinnen)</span></label>'
   +   '<textarea data-f="kwalificatienota" placeholder="Bv. De zaakvoerder wil binnen het jaar overlaten en zoekt structuur in het managementteam."></textarea>'
   +   '<div class="row">'
   +     '<div><label class="req">Jouw band met de contactpersoon</label>'
-  +       '<select data-f="relatie_tot_contact"><option value="">—</option>'
+  +       '<select data-f="relatie_tot_contact">'
   +       '<option value="oud_collega">Oud-collega</option>'
   +       '<option value="klant_van_mij">(Vroegere) klant van mij</option>'
-  +       '<option value="netwerkcontact">Netwerkcontact</option>'
+  +       '<option value="netwerkcontact" selected>Netwerkcontact</option>'
   +       '<option value="vriend_familie">Vriend / familie</option>'
   +       '<option value="anders">Anders</option></select></div>'
   +     '<div><label class="req">Heb je er al met de contactpersoon over gesproken?</label>'
-  +       '<select data-f="al_gesproken"><option value="">—</option>'
+  +       '<select data-f="al_gesproken">'
   +       '<option value="nog_niet">Nog niet</option>'
   +       '<option value="kort_vermeld">Kort vermeld</option>'
-  +       '<option value="verwacht_contact">Ja, hij/zij verwacht contact van The Next Level</option></select></div>'
+  +       '<option value="verwacht_contact" selected>Ja, hij/zij verwacht contact van The Next Level</option></select></div>'
   +   '</div>'
   +   '<label class="req">Concreet signaal of aanleiding — waarom nu?</label>'
   +   '<textarea data-f="signaal" placeholder="Een gebeurtenis, uitspraak of plan waardoor dit nú speelt."></textarea>'
@@ -297,7 +282,6 @@ function leesVerwijzer(){
     bedrijf: g('v_bedrijf'), functie: g('v_functie'), email: g('v_email'),
     telefoon: schoonTel(g('v_telefoon')), adres: g('v_adres'), ondernemingsnummer: g('v_onder')
   };
-  var f = g('v_factureren'); if (f) o.kan_factureren = f;
   Object.keys(o).forEach(function(k){ if (o[k] === '') delete o[k]; });
   if (akkoordOp) { o.akkoord_voorwaarden_op = akkoordOp; o.akkoord_voorwaarden_versie = VOORWAARDEN_VERSIE; }
   return o;
@@ -308,12 +292,12 @@ function leesVerwijzer(){
 var V_VERPLICHT = [
   ['v_aanspreking','je aanspreking'], ['v_voornaam','je voornaam'], ['v_achternaam','je achternaam'],
   ['v_bedrijf','je bedrijf'], ['v_functie','je functie'], ['v_email','je e-mailadres'],
-  ['v_factureren','of je zelf kan factureren'], ['v_onder','je ondernemingsnummer']
+  ['v_onder','je ondernemingsnummer']
 ];
 var LEAD_VERPLICHT = {
-  bedrijf:'de bedrijfsnaam', aanspreking:'de aanspreking', voornaam:'de voornaam contactpersoon',
+  bedrijf:'de bedrijfsnaam', sector:'de sector', aanspreking:'de aanspreking', voornaam:'de voornaam contactpersoon',
   achternaam:'de achternaam contactpersoon', functietitel:'de functietitel', email:'het e-mailadres contactpersoon',
-  kwalificatienota:'de kwalificatienota', relatie_tot_contact:'je band met de contactpersoon',
+  kwalificatienota:'waarom het bedrijf past', relatie_tot_contact:'je band met de contactpersoon',
   al_gesproken:'of je er al over sprak', signaal:'het concrete signaal', ingeschatte_uitdaging:'de ingeschatte uitdaging',
   urgentie:'de urgentie', naam_noemen:'of The Next Level je naam mag noemen'
 };
@@ -388,7 +372,7 @@ function vulTestdata(){
   s('v_aanspreking','Dhr'); s('v_voornaam','Jan'); s('v_achternaam','Peeters');
   s('v_bedrijf','Peeters Advies BV'); s('v_functie','Zelfstandig consultant');
   s('v_email','jan.peeters+' + r + '@example.com'); s('v_telefoon','+32 470 12 34 56');
-  s('v_adres','Dorpsstraat 1, 2000 Antwerpen'); s('v_factureren','true'); s('v_onder','0700.123.456');
+  s('v_adres','Dorpsstraat 1, 2000 Antwerpen'); s('v_onder','0700.123.456');
   leadBlocks().forEach(function(b){
     var f = function(name, val){ var e = b.querySelector('[data-f="' + name + '"]'); if (e) e.value = val; };
     f('bedrijf','TEST ' + r + ' — Metaalwerken Van Dijck NV');
